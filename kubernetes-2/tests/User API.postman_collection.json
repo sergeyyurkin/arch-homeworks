@@ -1,0 +1,202 @@
+{
+	"info": {
+		"_postman_id": "f110b8fc-4f0a-4931-8e4a-99e37e4c0009",
+		"name": "User API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Создание пользователя",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "af9a0c97-4d2b-4ff1-8a56-c17ffa8a1d5e",
+						"exec": [
+							"var responseJSON = JSON.parse(responseBody)\r",
+							"pm.collectionVariables.set(\"userId\", responseJSON[\"id\"])"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"user\",\r\n    \"lastname\": \"lastname\",\r\n    \"firstname\": \"firstname\",\r\n    \"email\": \"user@example.com\",\r\n    \"phone\": \"+7 (123) 456 78 99\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/otusapp/sergeyyurkin/api/users/",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"otusapp",
+						"sergeyyurkin",
+						"api",
+						"users",
+						""
+					]
+				},
+				"description": "// POST api/users"
+			},
+			"response": []
+		},
+		{
+			"name": "Получение всех пользователей",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/otusapp/sergeyyurkin/api/users/",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"otusapp",
+						"sergeyyurkin",
+						"api",
+						"users",
+						""
+					]
+				},
+				"description": "GET: api/users"
+			},
+			"response": []
+		},
+		{
+			"name": "Получение пользователя",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/otusapp/sergeyyurkin/api/users/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"otusapp",
+						"sergeyyurkin",
+						"api",
+						"users",
+						"{{userId}}"
+					]
+				},
+				"description": "GET api/users/{id}"
+			},
+			"response": []
+		},
+		{
+			"name": "Обновление пользователя",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": {{userId}},\r\n    \"username\": \"new user\",\r\n    \"lastname\": \"new lastname\",\r\n    \"firstname\": \"new firstname\",\r\n    \"email\": \"user@example.com\",\r\n    \"phone\": \"+7 (123) 456 78 99\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/otusapp/sergeyyurkin/api/users/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"otusapp",
+						"sergeyyurkin",
+						"api",
+						"users",
+						"{{userId}}"
+					]
+				},
+				"description": "PUT api/users/5"
+			},
+			"response": []
+		},
+		{
+			"name": "Удаление пользователя",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/otusapp/sergeyyurkin/api/users/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"otusapp",
+						"sergeyyurkin",
+						"api",
+						"users",
+						"{{userId}}"
+					]
+				},
+				"description": "DELETE api/users/5"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "ea25ed64-c1cd-4783-8eea-0637e34b0fef",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "7ec0a3ff-4c6a-4ae0-87bb-c7e0ba0f513d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "280c59ae-a0da-44cd-9d72-b2e33f612385",
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"id": "425b7330-3db1-4ee6-8c54-b588654a9df0",
+			"key": "baseUrl",
+			"value": "arch.homework"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
