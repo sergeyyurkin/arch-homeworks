@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: users-config
+data:
+  ASPNETCORE_ENVIRONMENT: {{ .Values.env.aspnetcoreEnv }}
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: users-secret
+type: Opaque
+data:
+  CONNECTION_STRING: {{ printf "Host=%s;Port=%s;Database=%s;Username=%s;Password=%s;" (include "postgresql.fullname" .) .Values.postgresql.service.port .Values.postgresql.postgresqlDatabase .Values.postgresql.postgresqlUsername .Values.postgresql.postgresqlPassword | b64enc | quote }}

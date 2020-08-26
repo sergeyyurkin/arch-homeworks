@@ -1,0 +1,47 @@
+replicaCount: 2
+
+image:
+  repository: syyurkin/users.api
+  tag: v1
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 8000
+
+ingress:
+  enabled: true
+  hosts:
+    - host: arch.homework
+      paths: 
+        - /otusapp/sergeyyurkin
+
+probes:
+  liveness:
+    path: /health
+    timeoutSeconds: 2
+    initialDelaySeconds: 10
+    periodSeconds: 5
+    port: 80
+  readiness:
+    path: /health
+    initialDelaySeconds: 10
+    periodSeconds: 5
+    port: 80
+
+env:
+  aspnetcoreEnv: Development
+
+postgresql:
+  enabled: true
+  postgresqlUsername: myuser
+  postgresqlPassword: passwd
+  postgresqlDatabase: myapp
+  service:
+    port: "5432"
+
+metrics:
+  serviceMonitor:
+    enabled: true
+
+resources: {}
