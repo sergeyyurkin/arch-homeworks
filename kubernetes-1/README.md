@@ -1,13 +1,5 @@
 # Kubernetes 2
 
-## Репозиторий GitHub
-
-https://github.com/sergeyyurkin/arch-homeworks
-
-```
-git clone https://github.com/sergeyyurkin/arch-homeworks.git
-```
-
 ## Установка
 
 ```
