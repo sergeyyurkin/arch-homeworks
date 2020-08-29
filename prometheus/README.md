@@ -8,7 +8,7 @@
 
 ```
 helm repo add stable https://kubernetes-charts.storage.googleapis.com
-helm install prom stable/prometheus-operator -f ./src/prometheus.yaml --atomic
+helm install prom stable/prometheus-operator -f ./prometheus.yaml --atomic
 ```
 
 Портфорвард для прометея и графаны.
@@ -22,10 +22,10 @@ kubectl port-forward service/prom-prometheus-operator-prometheus 9090
 
 ## Nginx Ingress
 
-Устанавливаем ингресс-контроллер через хелм.
+Устанавливаем ингресс через хелм.
 
 ```
-helm install nginx stable/nginx-ingress -f ./src/nginx-ingress.yaml --atomic
+helm install nginx stable/nginx-ingress -f ./nginx-ingress.yaml --atomic
 ```
 
 ## Сервис Users.Api
@@ -34,7 +34,7 @@ helm install nginx stable/nginx-ingress -f ./src/nginx-ingress.yaml --atomic
 
 ```
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install myapp .\src\Users.Api\charts\ --atomic
+helm install myapp ./charts --atomic
 ```
 
 Метрики
