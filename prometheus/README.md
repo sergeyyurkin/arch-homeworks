@@ -1,20 +1,14 @@
 # Prometheus & Grafana
 
+![dashboard.png](./dashboard.png)
+
+## Prometheus & Grafana
+
+Устанавливаем прометеус с графаной в качестве оператора через хелм.
+
 ```
 helm repo add stable https://kubernetes-charts.storage.googleapis.com
-helm repo update
-```
-
-Ставим прометей с графаной в качестве оператора.
-
-```
-helm install prom stable/prometheus-operator -f prometheus.yaml --atomic
-```
-
-Устанавливаем через хелм ингресс.
-
-```
-helm install nginx stable/nginx-ingress -f nginx-ingress.yaml --atomic
+helm install prom stable/prometheus-operator -f ./src/prometheus.yaml --atomic
 ```
 
 Портфорвард для прометея и графаны.
@@ -24,21 +18,27 @@ kubectl port-forward service/prom-grafana 9000:80
 kubectl port-forward service/prom-prometheus-operator-prometheus 9090
 ```
 
-Устанавливаем приложение.
+[dashboard.json](./dashboard.json) - файл дашборды для импорта.
+
+## Nginx Ingress
+
+Устанавливаем ингресс-контроллер через хелм.
 
 ```
-helm install myapp ./users-api --atomic
+helm install nginx stable/nginx-ingress -f ./src/nginx-ingress.yaml --atomic
+```
+
+## Сервис Users.Api
+
+Устанавливаем сервис через хелм.
+
+```
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install myapp .\src\Users.Api\charts\ --atomic
 ```
 
 Метрики
 
 ```
-curl -s http://localhost:31990/metrics
-```
-
-Другое
-
-```
-curl -H arch.homework http://arch.homework/otusapp/sergeyyurkin/metrics
-while 1; do ab -n 50 -c 5 http://localhost:31439/api/users ; sleep 3; done
+curl -H 'Host: arch.homework' http://arch.homework/otusapp/sergeyyurkin/metrics
 ```
