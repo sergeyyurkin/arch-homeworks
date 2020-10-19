@@ -1,0 +1,492 @@
+{
+	"info": {
+		"_postman_id": "4b643757-04f4-4b75-9524-11e4ad592f9d",
+		"name": "nginx based auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register new user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e0c67281-aa33-49fc-ac72-39df9cebed74",
+						"exec": [
+							"pm.collectionVariables.set(\"password\", pm.variables.replaceIn('{{$randomPassword}}'))\r",
+							"pm.collectionVariables.set(\"email\", pm.variables.replaceIn('{{$randomEmail}}'))\r",
+							"pm.collectionVariables.set(\"login\", pm.variables.replaceIn('{{$randomUserName}}'))"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d7d47463-d2f6-456b-93a1-a47a804dd410",
+						"exec": [
+							"var userId = pm.response.json()\r",
+							"pm.collectionVariables.set(\"userId\", pm.variables.replaceIn(userId))\r",
+							"\r",
+							"tests[\"[INFO] Request: \" + JSON.stringify(request)] = true;\r",
+							"tests[\"[INFO] Response: \" + responseBody] = true;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"login\": \"{{login}}\", \r\n\t\"password\": \"{{password}}\",\r\n\t\"email\": \"{{email}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ce08f278-533a-4140-a904-23ea71980491",
+						"exec": [
+							"tests[\"Status code is 204\"] = responseCode.code === 204;\r",
+							"\r",
+							"tests[\"[INFO] Request: \" + JSON.stringify(request)] = true;\r",
+							"tests[\"[INFO] Response: \" + responseBody] = true;\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"login\": \"{{login}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authentication user after logined",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0aab83e6-170f-43c4-b989-9248478e1cf8",
+						"exec": [
+							"tests[\"Status code is 204\"] = responseCode.code === 204;\r",
+							"\r",
+							"pm.test(\"Headers is equal user data\", function () {\r",
+							"    var headers = pm.response.headers;\r",
+							"    pm.expect(parseInt(headers.get(\"X-UserId\"))).to.eql(pm.collectionVariables.get(\"userId\"))\r",
+							"    pm.expect(headers.get(\"X-User\")).to.eql(pm.collectionVariables.get(\"login\"))\r",
+							"    pm.expect(headers.get(\"X-Email\")).to.eql(pm.collectionVariables.get(\"email\"))\r",
+							"});\r",
+							"\r",
+							"// tests[\"[INFO] Request: \" + JSON.stringify(request)] = true;\r",
+							"// tests[\"[INFO] Response: \" + responseBody] = true;\r",
+							"\r",
+							"tests[\"[INFO] Request Headers: \" + pm.request.headers] = true;\r",
+							"tests[\"[INFO] Response Headers: \" + pm.response.headers] = true;"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "01f52533-0831-4b51-88f7-b640acc44311",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/auth",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create persone",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "59b141da-c096-40e6-ac4d-fedb65a85f08",
+						"exec": [
+							"pm.collectionVariables.set(\"firstName\", pm.variables.replaceIn('{{$randomFirstName}}'))\r",
+							"pm.collectionVariables.set(\"lastName\", pm.variables.replaceIn('{{$randomLastName}}'))\r",
+							"\r",
+							"var moment = require('moment')\r",
+							"var birthDate = moment().format('YYYY-MM-DDTHH:mm:ss');\r",
+							"\r",
+							"pm.collectionVariables.set(\"birthDate\", pm.variables.replaceIn(birthDate))"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "dc28d325-a8ba-4410-b7fc-2c8c4fe5b35b",
+						"exec": [
+							"pm.test(\"Person was created for logined user\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.userId).to.eql(pm.collectionVariables.get(\"userId\"));\r",
+							"    pm.expect(jsonData.firstName).to.eql(pm.collectionVariables.get(\"firstName\"));\r",
+							"    pm.expect(jsonData.lastName).to.eql(pm.collectionVariables.get(\"lastName\"));\r",
+							"    pm.expect(jsonData.birthDate).to.eql(pm.collectionVariables.get(\"birthDate\"));\r",
+							"});\r",
+							"\r",
+							"tests[\"Status code is 201\"] = responseCode.code === 201;\r",
+							"\r",
+							"tests[\"[INFO] Request: \" + JSON.stringify(request)] = true;\r",
+							"tests[\"[INFO] Response: \" + responseBody] = true;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-UserId",
+						"type": "text",
+						"value": "{{userId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"{{firstName}}\",\r\n    \"lastName\": \"{{lastName}}\",\r\n    \"birthDate\": \"{{birthDate}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/me",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get person",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7316b619-9075-4e76-b13d-8d607c36ff07",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "5ee11b69-569a-4ac7-bac0-ae8e15f1f2ec",
+						"exec": [
+							"pm.test(\"Get person for logined user\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"    var jsonData = pm.response.json()\r",
+							"    pm.expect(jsonData.userId).to.eql(pm.collectionVariables.get(\"userId\"))\r",
+							"    pm.expect(jsonData.firstName).to.eql(pm.collectionVariables.get(\"firstName\"))\r",
+							"    pm.expect(jsonData.lastName).to.eql(pm.collectionVariables.get(\"lastName\"))\r",
+							"    pm.expect(jsonData.birthDate).to.eql(pm.collectionVariables.get(\"birthDate\"));\r",
+							"})\r",
+							"\r",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;\r",
+							"\r",
+							"tests[\"[INFO] Request: \" + JSON.stringify(request)] = true;\r",
+							"tests[\"[INFO] Response: \" + responseBody] = true;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-UserId",
+						"type": "text",
+						"value": "{{userId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/me",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "edda6a4b-46de-4d44-8d9e-304daf837005",
+						"exec": [
+							"tests[\"Status code is 204\"] = responseCode.code === 204;\r",
+							"\r",
+							"tests[\"[INFO] Request: \" + JSON.stringify(request)] = true;\r",
+							"tests[\"[INFO] Response: \" + responseBody] = true;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/logout",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get person after logout",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d7948d3e-07be-45ec-ad71-ea3b1836f4de",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "56983910-05e0-495f-a579-6f7436a0271b",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;\r",
+							"\r",
+							"tests[\"[INFO] Request: \" + JSON.stringify(request)] = true;\r",
+							"tests[\"[INFO] Response: \" + responseBody] = true;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-UserId",
+						"type": "text",
+						"value": "{{userId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/me",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authentication user after logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "60e440a4-040a-455d-b3e8-4e84cc713be9",
+						"exec": [
+							"tests[\"Status code is 401\"] = responseCode.code === 401;\r",
+							"\r",
+							"tests[\"[INFO] Request: \" + JSON.stringify(request)] = true;\r",
+							"tests[\"[INFO] Response: \" + responseBody] = true;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/auth",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "00ea4257-21be-4579-a274-eecdfcee6967",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "4243ce1f-b6a8-4929-882a-76ee401041c6",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d4f3053b-8bfe-4671-914e-48408ed1d688",
+			"key": "baseUrl",
+			"value": "http://arch.homework"
+		},
+		{
+			"id": "e28f56d2-ffe4-45d0-8052-3672b55d7f27",
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"id": "bb2f5fbc-13a8-40e8-9ea6-165cd9524819",
+			"key": "email",
+			"value": ""
+		},
+		{
+			"id": "68195fdc-d7e2-4eb0-8eea-64e4de4815ae",
+			"key": "firstName",
+			"value": ""
+		},
+		{
+			"id": "1ac9a069-9a16-4c48-8811-8b78e4b9043d",
+			"key": "lastName",
+			"value": ""
+		},
+		{
+			"id": "0e72f704-a4a5-46e0-84a6-8567a0d35c72",
+			"key": "login",
+			"value": ""
+		},
+		{
+			"id": "0d5ca31f-e992-4e63-a9b7-53d59e0fded6",
+			"key": "password",
+			"value": ""
+		},
+		{
+			"id": "22c53bfb-6920-4206-8512-a717864d5284",
+			"key": "birthDate",
+			"value": ""
+		}
+	],
+	"protocolProfileBehavior": {}
+}

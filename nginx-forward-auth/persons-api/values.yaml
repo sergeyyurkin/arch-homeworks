@@ -1,0 +1,48 @@
+replicaCount: 2
+fullnameOverride: persons
+
+image:
+  repository: syyurkin/persons-api
+  tag: v2
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 8000
+
+ingress:
+  enabled: false
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  hosts:
+    - host: arch.homework
+      paths: 
+        - /auth
+
+probes:
+  liveness:
+    path: /health
+    timeoutSeconds: 2
+    initialDelaySeconds: 10
+    periodSeconds: 5
+    port: 80
+  readiness:
+    path: /health
+    initialDelaySeconds: 10
+    periodSeconds: 5
+    port: 80
+
+env:
+  aspnetcoreEnv: Development
+
+postgresql:
+  enabled: true
+  postgresqlUsername: myuser
+  postgresqlPassword: passwd
+  postgresqlDatabase: persons
+  persistence:
+    size: 0.1Gi
+  service:
+    port: "5432"
+
+resources: {}
