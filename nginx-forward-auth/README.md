@@ -21,8 +21,8 @@ kubectl config set-context --current --namespace=myapp
 Установка сервисов из helm-чартов:
 
 ```
-helm install identity .\identity-api
-helm install persons .\persons-api
+helm install identity ./identity-api
+helm install persons ./persons-api
 
 ```
 
@@ -36,13 +36,13 @@ helm install nginx ingress-nginx/ingress-nginx
 Установка ingress'ов:
 
 ```
-kubectl apply -f auth-ingress.yaml
-kubectl apply -f app-ingress.yaml
+kubectl apply -f ./auth-ingress.yaml
+kubectl apply -f ./app-ingress.yaml
 ```
 
 ## 3. Тестирование
 
 
 ```
-newman run '.\nginx_forward_auth.postman_collection.json'
+newman run nginx_forward_auth.postman_collection.json
 ```
